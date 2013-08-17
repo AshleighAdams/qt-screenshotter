@@ -58,8 +58,8 @@ void OpenImage(const string& file)
 	
 	if(launcher == "")
 	{
-		pSettings->setValue("image_editor", "pinta");
-		launcher = "pinta";
+		pSettings->setValue("image_editor", "xdg-open");
+		launcher = "xdg-open";
 	}
 	
 	system((launcher + " " + file).c_str());
@@ -174,7 +174,7 @@ bool Upload(const string& file)
 	
 	NotifyNotification* n;
 	notify_init("Screenshot Uploaded");
-	n = notify_notification_new ("Screenshot Uploaded", ("The screenshot has been uploaded to\n " + response).c_str(), pSettings->value("notification/icon", "computer").toString().toStdString().c_str());
+	n = notify_notification_new ("Screenshot Uploaded", ("The screenshot has been uploaded to\n " + response).c_str(), pSettings->value("notification/icon", "video-display").toString().toStdString().c_str());
 	notify_notification_set_timeout(n, 3000); //3 seconds
 	
 	if(pSettings->value("notification/critical", true).toBool())
