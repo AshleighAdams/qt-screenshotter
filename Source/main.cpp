@@ -130,7 +130,9 @@ bool Upload(const string& file)
 	curl_free(puser);
 	curl_free(pauth);
 	
-	curl_easy_setopt(curl, CURLOPT_URL, ("http://screenshot.xiatek.org/upload.php?user=" + user + "&auth=" + auth).c_str());
+	string towhom = pSettings->value("upload_location", "http://screenshot.xiatek.org/").toString().toStdString();
+	
+	curl_easy_setopt(curl, CURLOPT_URL, (towhom + "upload.php?user=" + user + "&auth=" + auth).c_str());
 	
 	string response;
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_to_string);
@@ -161,7 +163,7 @@ bool Upload(const string& file)
 		return false;
 	}
 	
-	response = "http://screenshot.xiatek.org/" + response;
+	response = towhom + response;
 	
 	QClipboard* clipboard = QApplication::clipboard();
 	clipboard->setText(response.c_str());
@@ -172,15 +174,16 @@ bool Upload(const string& file)
 	
 	NotifyNotification* n;
 	notify_init("Screenshot Uploaded");
-	n = notify_notification_new ("Screenshot Uploaded", ("The screenshot has been uploaded to\n " + response).c_str(), "");
+	n = notify_notification_new ("Screenshot Uploaded", ("The screenshot has been uploaded to\n " + response).c_str(), pSettings->value("notification/icon", "computer").toString().toStdString().c_str());
 	notify_notification_set_timeout(n, 3000); //3 seconds
-	//notify_notification_set_urgency(n, NOTIFY_URGENCY_CRITICAL);
+	
+	if(pSettings->value("notification/critical", true).toBool())
+		notify_notification_set_urgency(n, NOTIFY_URGENCY_CRITICAL);
 	
 	//void* x = malloc(0);
 	notify_notification_add_action(n, "close", "Close", &ActionCallback, 0, 0);
 	
 	notify_notification_show (n, NULL);
-	
 }
 
 bool Screenshot()
