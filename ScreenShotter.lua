@@ -34,15 +34,13 @@ solution "ScreenShotter"
 		
 		configuration "linux"
 			buildoptions { "-std=c++11" }
-			links { "pthread" } -- for std::thread
+			links { "pthread", "curl" } -- for std::thread
 			defines { "LINUX" }
-			buildoptions { "`pkg-config --cflags QtGui QtCore`" } -- Qt includes
-			linkoptions { "`pkg-config --libs QtGui QtCore`" }
+			buildoptions { "`pkg-config --cflags QtGui QtCore libnotify`" } -- Qt includes
+			linkoptions { "`pkg-config --libs QtGui QtCore libnotify`" }
 			
 		configuration "Debug"
 			targetsuffix "_d"
-			
-		links { } -- Such as { "GL", "X11" }
 
 		configuration "linux"
 			excludes { } -- "Source/WindowsX.cpp"
